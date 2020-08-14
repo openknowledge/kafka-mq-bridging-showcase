@@ -1,0 +1,55 @@
+version: '3.7'
+services:
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:5.5.0
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+    depends_on:
+      - zookeeper
+
+  kafka-consumer:
+    image: kafka-mq-bridging-showcase/kafka-consumer
+    environment:
+      - KAFKA_HOST=kafka:9092
+      - KAFKA_TOPIC=DEV.FROM.MQ
+      - KAFKA_CLIENT_ID=kafka-consumer
+      - KAFKA_GROUP_ID=kafka-consumer
+
+  kafka-mq-connector:
+    build:
+      context: ./kafka-connect-mq-source
+    volumes:
+      - ./connector-config/connect-distributed.properties:/opt/kafka/config/connect-distributed.properties
+    ports:
+      - 8083:8083
+
+  mq-broker:
+    image: kafka-mq-bridging-showcase/mq-broker-source
+    ports:
+      - 9443:9443
+    environment:
+      LICENSE: "accept"
+      MQ_QMGR_NAME: "QM1"
+
+  mq-producer:
+    image: kafka-mq-bridging-showcase/mq-queue-producer
+    environment:
+      - MQ_HOST=mq-broker
+      - MQ_PORT=1414
+      - MQ_QUEUE=DEV.TO.KAFKA.QUEUE
+      - MQ_USER=admin
+      - MQ_PASSWORD=passw0rd
+      - MQ_CHANNEL=DEV.ADMIN.SVRCONN
+      - MQ_QMANAGER=QM1
+    depends_on:
+      - mq-broker

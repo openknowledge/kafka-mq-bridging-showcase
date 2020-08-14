@@ -11,6 +11,7 @@
 
     <modules>
         <module>kafka-mq-sink</module>
+        <module>kafka-mq-source</module>
     </modules>
 
     <developers>
