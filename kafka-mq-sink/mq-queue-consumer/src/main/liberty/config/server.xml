@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="${project.name}">
+
+    <featureManager>
+        <feature>javaee-8.0</feature>
+        <feature>microProfile-3.3</feature>
+    </featureManager>
+
+    <variable name="default.http.port" defaultValue="9080"/>
+    <variable name="default.https.port" defaultValue="9443"/>
+    <variable name="app.context.root" defaultValue="mq-queue-consumer"/>
+
+    <httpEndpoint host="*" httpPort="${default.http.port}" httpsPort="${default.https.port}" id="defaultHttpEndpoint"/>
+
+    <webApplication location="mq-queue-consumer.war" contextRoot="${app.context.root}"/>
+
+    <mpMetrics authentication="false"/>
+
+    <!-- Resource adapter for ibm mq-->
+    <resourceAdapter id="wmqjmsra" location="${shared.resource.dir}wmq.jmsra-9.1.4.0.rar"/>
+
+    <jmsConnectionFactory jndiName="JMSFactory">
+        <properties.wmqjmsra
+                transportType="CLIENT"
+                hostName="${ibm.host}"
+                port="${ibm.port}"
+                channel="${ibm.channel}"
+                queueManager="${ibm.qManager}"/>
+        <containerAuthData
+                user="${secret.user}"
+                password="${secret.pass}"/>
+    </jmsConnectionFactory>
+
+    <jmsQueue id="jms/mdbq" jndiName="JMSQueue">
+        <properties.wmqjmsra
+                baseQueueName="${ibm.queue}"
+                baseQueueManagerName="${ibm.qManager}"/>
+    </jmsQueue>
+
+    <jmsActivationSpec id="mq-queue-consumer/QueueConsumer">
+        <properties.wmqjmsra
+                destinationRef="jms/mdbq"
+                destinationType="javax.jms.Queue"
+                channel="${ibm.channel}"
+                clientID="${ibm.clientId}"
+                hostName="${ibm.host}"
+                port="${ibm.port}"
+                queueManager="${ibm.qManager}"
+                transportType="CLIENT"/>
+        <authData
+                user="${secret.user}"
+                password="${secret.pass}"/>
+    </jmsActivationSpec>
+
+    <logging hideMessage="SRVE9967W,CWPKI0803A,CWWKZ0058I"/>
+</server>

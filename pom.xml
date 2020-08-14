@@ -3,12 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <name>Kafka-MQ-Bridging Showcase</name>
 
-    <groupId>de.openknowledge.showcase.kafka-mq-briding</groupId>
+    <groupId>de.openknowledge.showcase.kafka-mq-briding-showcase</groupId>
     <artifactId>kafka-mq-briding-showcase</artifactId>
     <packaging>pom</packaging>
     <version>0</version>
+
+    <modules>
+        <module>kafka-mq-sink</module>
+    </modules>
 
     <developers>
         <developer>
