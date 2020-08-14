@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>Kafka-MQ-Bridging Showcase</name>
+
+    <groupId>de.openknowledge.showcase.kafka-mq-briding</groupId>
+    <artifactId>kafka-mq-briding-showcase</artifactId>
+    <packaging>pom</packaging>
+    <version>0</version>
+
+    <developers>
+        <developer>
+            <name>Stephan Mueller</name>
+            <email>stephan.mueller@openknowledge.de</email>
+            <organization>open knowledge GmbH</organization>
+        </developer>
+        <developer>
+            <name>Max Weis</name>
+            <email>max.weis@openknowledge.de</email>
+            <organization>open knowledge GmbH</organization>
+        </developer>
+    </developers>
+</project>
