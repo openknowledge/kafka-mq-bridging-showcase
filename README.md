@@ -5,11 +5,11 @@
 The showcase consists of two independent parts demonstrating bridging messages from Apache Kafka to IBM MQ and vice versa.
 
 The [kafka-mq-sink](kafka-mq-sink/README.md) showcase shows how to connect a Kafka broker as a sink for a MQ broker by using the Kafka 
-connector [kafka-connect-mq-sink](https://github.com/ibm-messaging/kafka-connect-mq-sink). Therefor a custom Kafka 
+connector [kafka-connect-mq-sink](https://github.com/ibm-messaging/kafka-connect-mq-sink). Therefore a custom Kafka 
 producer application and a custom MQ queue consumer application are provided.
 
 The [kafka-mq-source](kafka-mq-source/README.md) showcase shows how to connect a MQ broker as a source for a Kafka broker by using the Kafka 
-connector [kafka-connect-mq-source](https://github.com/ibm-messaging/kafka-connect-mq-source). Therefor a custom MQ queue producer 
+connector [kafka-connect-mq-source](https://github.com/ibm-messaging/kafka-connect-mq-source). Therefore a custom MQ queue producer 
 application and a custom Kafka consumer application are provided.
 
 ## Kafka Connect
