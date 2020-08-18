@@ -44,7 +44,7 @@ konsumierten Records - extern in einem eigenen Kafka-Topics vor. Da die Aufgabe 
 gestartet, gestoppt oder neu gestartet werden. Eine neue gestartete Aufgabe halt sich einfach die neuesten Offsets von Kafka ab und setzt 
 ihre Arbeit fort.
 
-![Kafka Connect](https://cdn.confluent.io/wp-content/uploads/kafka-connect-2.png)
+![Kafka Connect](./docs/kafkaConnect.png)
 
 Kafka Connect kann entweder als eigenständiger Prozess, der Aufträge auf einem einzelnen Rechner ausführt (z.B. Logdaten sammeln) oder als 
 verteilter, skalierbarer, fehlertoleranter Dienst, der eine ganze Organisation unterstützt,eingesetzt werden. Im Standalone-Modus läuft 

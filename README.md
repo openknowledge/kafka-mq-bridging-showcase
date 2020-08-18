@@ -40,7 +40,7 @@ stores this configuration—as well as the status and the latest offsets for the
 topics. Since the task does not store any state, tasks can be stopped, started, or restarted at any time. Newly started tasks will simply 
 pick up the latest offsets from Kafka and continue on their merry way.
 
-![Kafka Connect](https://cdn.confluent.io/wp-content/uploads/kafka-connect-2.png)
+![Kafka Connect](./docs/kafkaConnect.png)
 
 Kafka Connect can be deployed either as a standalone process that runs jobs on a single machine (for example, log collection), or as a 
 distributed, scalable, fault-tolerant service supporting an entire organization. In standalone mode, Kafka Connect runs on a single 
