@@ -57,6 +57,11 @@ More information about Kafka Connect can be found [here](http://kafka.apache.org
 [here](https://www.confluent.jp/blog/create-dynamic-kafka-connect-source-connectors/).
 
 
+#### Run the Showcase
+
+You can find the instuctions to run the source showcase [here](./kafka-mq-source/README.md) and the sink showcase [here](./kafka-mq-sink/README.md)
+
+
 ### Kafka Connect sink/source connector for IBM MQ
 
 IBM provides two connectors to copy data from IBM Event Streams or Apache Kafka to IBM MQ and vice versa.   

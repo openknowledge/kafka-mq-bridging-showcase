@@ -27,7 +27,7 @@ Kafka Connect ist auf das Kopieren von Daten in und aus Kafka spezialisiert. Aus
 ihre Konfiguration verwaltet. Unter der Haube erstellt Kafka Connect fehlertolerante Kafka-Produzenten und -Konsumenten und überwacht die 
 Offsets für die Kafka Records, die Produzenten und Konsumenten geschrieben oder gelesen haben.
 
-Darüber hinaus bieten Kafka Konnektoren eine Reihe von mächtigen Features. Ein Konnektor kann auf einfache Art und Weise so konfiguriert 
+Darüber hinaus bieten Kafka Konnektoren eine Reihe von mächtigen Features an. Ein Konnektor kann auf einfache Art und Weise so konfiguriert 
 werden, dass er nicht verarbeitbare oder ungültige Nachrichten an eine Dead-Letter-Queue leitet, einzeln Nachrichten automatisch in ein 
 anderes Format umwandelt, bevor eine Nachricht von einem Source-Konnektor an Kafka gesendet wird, in die Confluent Schema Registry zur 
 automatischen Schema-Registrierung und -verwaltung integrieren bevor sie von Kafka durch einen Sink-Konnektor konsumiert wird oder einfach 
@@ -60,6 +60,10 @@ Konnektoren und Tasks gleichmäßig zu verteilen.
 Mehr Informationen zu Kafka Connect finden sich [hier](http://kafka.apache.org/documentation.html#connect), 
 [hier](https://docs.confluent.io/current/connect/index.html) und 
 [hier](https://www.confluent.jp/blog/create-dynamic-kafka-connect-source-connectors/).
+
+#### Showcase starten
+
+Die Anleitung zum Starten des Source Showcases findet man [hier](./kafka-mq-source/README_de.md) und für den Sink Showcase [hier](./kafka-mq-sink/README_de.md)
 
 
 ### Kafka Connect sink/source connector for IBM MQ
