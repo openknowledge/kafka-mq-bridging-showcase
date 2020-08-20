@@ -10,7 +10,7 @@ Hierzu wird neben den beiden Brokern und dem Connector ein eigener MQ Queue Prod
 * Kafka Konnektor `kafka-connect-mq-source` 
 * Integration von MP Reactive Messaging 
 * Integration von JMS Message Driven Bean 
-
+* Integration von MP OpenTracing
 
 ## Showcase ausführen
 
@@ -87,19 +87,45 @@ $ curl -s -X POST -H "Content-Type: application/json" --data @kafka-connect-mq-s
 
 #### Schritt 4: Nachrichten Versenden und Empfangen
 
-Es gibt zwei Möglichkeiten die Brücke zwischen MQ und Kafka zu testen. 
-
-1) Die Anwendung `mq-queue-producer` enthält einen Nachrichtengenerator, der alle zwei Sekunden eine neue Nachricht erzeugt und versendet. 
-Der Empfang und die erfolgreiche Verarbeitung der Nachricht kann in der Log-Ausgabe der Anwendung `kafka-consumer` nachvollzogen werden.
-
-2) Zusätzlich zum Nachrichtengenerator verfügt die Anwendung über eine REST Schnittstelle, mit deren Hilfe eigene Nachrichten erzeugt und 
-versendet werden können. 
+Um die Brücke zwischen MQ und Kafka zu testen, stellt die Anwendung `mq-queue-producer` eine REST Schnittstelle bereit, mit deren Hilfe 
+eigene Nachrichten erzeugt und versendet werden können. 
 
 Um eine eigene Nachricht zu versenden muss man den folgenden GET-Request senden:
 
 ```shell script
 $ curl -X GET http://localhost:9080/mq-queue-producer/api/messages?msg=<custom message>
 ```
+
+#### Schritt 5: Nachrichten mit OpenTracing und Jaeger verfolgen
+
+[OpenTracing](http://opentracing.io/) ist ein neuer, offener Standard zur Ablaufverfolgung für verteilte Anwendungen. Entwickler mit 
+Erfahrung im Aufbau von großen Mikroservice Umgebungen, Wissen um die Notwendigkeit und Bedeutung des verteilten Tracings: Logging auf 
+Prozessebene und Monitoring von Metriken (Geschäftskennzahlen) sind in verteilten Systemen unverzichtbar, jedoch kann mit keinem der beiden
+Ansätze die Spuren in Form Aufrufen und Nachrichten rekonstruieren, die eine einzelne Transaktion in einem verteilten System hinterlässt.
+
+Die [MicroProfile OpenTracing](https://microprofile.io/project/eclipse/microprofile-opentracing) Spezifikation definiert das Verhalten und 
+eine API für den Zugriff auf ein OpenTracing-konformes Tracer-Objekt innerhalb einer Anwendung. Die Spezifikation legt fest, in welcher 
+Weise OpenTracing Spans für eingehende und ausgehende Anfragen automatisch erstellt werden. Die API definiert darüber hinaus, wie die 
+Ablaufverfolgung für bestimmte Endpunkte explizit deaktiviert oder aktiviert werden kann.
+
+[Jaeger](https://www.jaegertracing.io) ist ein verteiltes Tracing-System, das von Uber Technologies entwickelt und als Open Source Projekt 
+veröffentlicht wurde. Jaeger wird die für Überwachung und Fehlerbehebung in verteilten Systemen (insbesondere Mikroservice-Architekturen) 
+einschließlich verteilter Kontextpropagierung und Transaktionsüberwachung, Fehleranalyse, Abhängigkeitsanalyse sowie Performanz-und 
+Latenzoptimierung genutzt.
+
+Der Jaeger-Server stellt eine eigene UI zur Verfügung, die unter http://localhost:16681/ erreichbar ist. 
+
+Wie beschrieben erlaubt verteiltes Tracing, die Beziehungen zwischen den Diensten in einem verteilten System nachzuvollziehen. Das Senden 
+einer Nachricht durch Aufruf der REST-API des `mq-queue-consumer` (Schritt 4), die vom `kafka-consumer` konsumiert wird, führt zur 
+Generierung mehrere Traces aus den der Jaeger Server einen Abhängigkeitsgraphen erzeugt. Der erzeugte Graph weist eine Verbindung zwischen 
+diesen beiden Anwendungen aus. 
+
+![traces](../docs/traces.png)
+
+Weitere Einzelheiten zu Opentracing für Java und Kafka finden Sie hier:
+* [jaeger-Kunde](https://github.com/jaegertracing/jaeger-client-java)
+* [java-kafka-client](https://github.com/opentracing-contrib/java-kafka-client)
+
 
 
 ### Fehlerbehebung

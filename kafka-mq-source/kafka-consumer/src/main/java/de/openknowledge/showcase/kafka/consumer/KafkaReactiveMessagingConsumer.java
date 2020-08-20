@@ -16,10 +16,13 @@
 package de.openknowledge.showcase.kafka.consumer;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Kafka consumer that receives messages from a Kafka topic.
@@ -29,12 +32,16 @@ public class KafkaReactiveMessagingConsumer {
 
   private static final Logger LOG = LoggerFactory.getLogger(KafkaReactiveMessagingConsumer.class);
 
+  @Tracing
   @Incoming("message")
-  public void onMessage(final CustomMessage message) {
+  public CompletionStage onMessage(final Message message) {
     try {
-      LOG.info("Received message {}", message);
+      LOG.info("Received message {}", message.getPayload());
+
+      return CompletableFuture.completedFuture(null);
     } catch (IllegalArgumentException e) {
       LOG.error(e.getMessage(), e);
+      return CompletableFuture.completedFuture(null);
     }
   }
 }

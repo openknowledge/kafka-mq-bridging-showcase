@@ -2,7 +2,10 @@
 
 The showcase demonstrates how to connect a MQ broker as a source for a Kafka broker by using the Kafka connector 
 [kafka-connect-mq-source](https://github.com/ibm-messaging/kafka-connect-mq-source). Therefore a custom MQ queue producer application and a 
-custom Kafka consumer application are provided.
+custom Kafka consumer application are provided. To monitor the messages being bridged between the MQ broker and the Kafka broker, a 
+[Jaeger](https://www.jaegertracing.io) server was added to the showcase. The traces are provided by 
+[MP OpenTracing](https://microprofile.io/project/eclipse/microprofile-opentracing) which was added both to the producer and the consumer 
+application.
 
 **Notable Features:**
 * Apache Kafka broker
@@ -10,6 +13,7 @@ custom Kafka consumer application are provided.
 * Kafka connector `kafka-connect-mq-source` 
 * Integration of MP Reactive Messaging 
 * Integration of JMS 
+* Integration of MP OpenTracing
 
 ## How to run
 
@@ -37,6 +41,7 @@ showcase.
 * the Kafka connector `kafka-connect-mq-source` which connects IBM MQ as a source for Apache Kafka 
 * the IBM MQ broker provided by IBM
 * the custom Java EE application `mq-queue-producer` which send messages to the JMS queue
+* the Jaeger tracing server
 
 To start the containers you have to run `docker-compose`:
 
@@ -81,18 +86,42 @@ $ curl -s -X POST -H "Content-Type: application/json" --data @kafka-connect-mq-s
 
 #### Step 4: Produce and consume messages
 
-There are two ways to test the bridge between MQ and Kafka. 
-
-1) The custom application `mq-queue-producer` contains a message generator that generates and sends a new message every two seconds. The 
-receipt and successful processing of the message can be traced in the log output of the custom application `kafka-consumer`.
-
-2) In addition to the message generator, the application provides a REST API that can be used to create and send your own messages. 
+To test the bridge between MQ and Kafka the custom application `mq-queue-producer` provides a REST API that can be used to create and send 
+your own messages. 
 
 To send a custom message you have to send the following GET request:
 
 ```shell script
 $ curl -X GET http://localhost:9080/mq-queue-producer/api/messages?msg=<custom message>
 ```
+
+#### Step 5: Trace messages with OpenTracing and Jaeger
+
+[OpenTracing](http://opentracing.io/) is a new, open distributed tracing standard for applications and. Developers with experience building 
+microservices at scale understand the role and importance of distributed tracing: per-process logging and metric monitoring have their 
+place, but neither can reconstruct the elaborate journeys that transactions take as they propagate across a distributed system. Distributed 
+traces are these journeys.
+
+The [MicroProfile OpenTracing](https://microprofile.io/project/eclipse/microprofile-opentracing) specification defines behaviors and an API
+for accessing an OpenTracing compliant Tracer object within your application. The behaviors specify how incoming and outgoing requests will
+have OpenTracing Spans automatically created. The API defines how to explicitly disable or enable tracing for given endpoints.
+
+[Jaeger](https://www.jaegertracing.io) is a distributed tracing system released as open source by Uber Technologies. It is used for 
+monitoring and troubleshooting microservices-based distributed systems, including distributed context propagation and transaction 
+monitoring, root cause analysis, service dependency analysis and performance / latency optimization.
+
+The Jaeger server provides an UI which can be accessed via http://localhost:16681/. 
+
+As described, distributed tracing allows to trace the relationships between services in a distributed system. Sending a custom message by 
+calling the REST API of the `mq-queue-consumer` (Step 4) which is consumed by the `kafka-consumer`, will affect the generation of at least 
+two traces from which the Jaeger server generates a dependency graph. The generated graph shows a connection between these two applications.  
+ 
+
+![traces](../docs/traces.png)
+
+Further details on Opentracing for Java and Kafka can be found here:
+* [jaeger-client](https://github.com/jaegertracing/jaeger-client-java)
+* [java-kafka-client](https://github.com/opentracing-contrib/java-kafka-client)
 
 
 ### Resolving issues

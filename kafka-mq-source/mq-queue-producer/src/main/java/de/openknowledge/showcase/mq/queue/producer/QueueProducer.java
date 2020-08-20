@@ -15,11 +15,15 @@
  */
 package de.openknowledge.showcase.mq.queue.producer;
 
+import io.jaegertracing.Configuration;
+import io.opentracing.Tracer;
+import io.opentracing.contrib.jms2.TracingMessageProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -43,10 +47,14 @@ public class QueueProducer {
   @Resource(lookup = "JMSQueue")
   private Queue queue;
 
+  @Inject
+  Tracer tracer;
+
   public void send(final CustomMessage message) {
     try (Connection connection = jmsFactory.createConnection();
         Session session = connection.createSession();
-        MessageProducer producer = session.createProducer(queue)) {
+        MessageProducer messageProducer = session.createProducer(queue);
+        TracingMessageProducer producer = new TracingMessageProducer(messageProducer, tracer)) {
 
       String json = JsonbBuilder.create().toJson(message);
 
