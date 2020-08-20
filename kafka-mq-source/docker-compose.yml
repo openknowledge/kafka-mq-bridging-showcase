@@ -17,14 +17,6 @@ services:
     depends_on:
       - zookeeper
 
-  kafka-consumer:
-    image: kafka-mq-bridging-showcase/kafka-consumer
-    environment:
-      - KAFKA_HOST=kafka:9092
-      - KAFKA_TOPIC=DEV.FROM.MQ
-      - KAFKA_CLIENT_ID=kafka-consumer
-      - KAFKA_GROUP_ID=kafka-consumer
-
   kafka-mq-connector:
     build:
       context: ./kafka-connect-mq-source
@@ -41,8 +33,15 @@ services:
       LICENSE: "accept"
       MQ_QMGR_NAME: "QM1"
 
+  jaeger:
+    image: jaegertracing/all-in-one:1.18.1
+    ports:
+      - "16686:16686"
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+
   mq-producer:
-    image: kafka-mq-bridging-showcase/mq-queue-producer
+    image: kafka-mq-bridging-showcase/mq-queue-producer:0
     environment:
       - MQ_HOST=mq-broker
       - MQ_PORT=1414
@@ -51,5 +50,27 @@ services:
       - MQ_PASSWORD=passw0rd
       - MQ_CHANNEL=DEV.ADMIN.SVRCONN
       - MQ_QMANAGER=QM1
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_SERVICE_NAME=mq-producer
+      - JAEGER_REPORTER_LOG_SPANS=true
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_PARAM=1
+    ports:
+      - 9080:9080
     depends_on:
       - mq-broker
+
+  kafka-consumer:
+    image: kafka-mq-bridging-showcase/kafka-consumer:0
+    environment:
+      - KAFKA_HOST=kafka:9092
+      - KAFKA_TOPIC=DEV.FROM.MQ
+      - KAFKA_CLIENT_ID=kafka-consumer
+      - KAFKA_GROUP_ID=kafka-consumer
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_SERVICE_NAME=kafka-consumer
+      - JAEGER_REPORTER_LOG_SPANS=true
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_PARAM=1
+    depends_on:
+      - kafka
