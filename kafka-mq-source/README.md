@@ -1,6 +1,8 @@
 # Kafka/MQ Bridging Showcase - Kafka MQ Source
 
-The showcase demonstrates bridging messages from IBM MQ to Apache Kafka
+The showcase demonstrates how to connect a MQ broker as a source for a Kafka broker by using the Kafka connector 
+[kafka-connect-mq-source](https://github.com/ibm-messaging/kafka-connect-mq-source). Therefore a custom MQ queue producer application and a 
+custom Kafka consumer application are provided.
 
 **Notable Features:**
 * Apache Kafka broker
@@ -23,7 +25,7 @@ Before running the application it needs to be compiled and packaged using `Maven
 ```shell script
 $ mvn clean package
 ```
- 
+
 #### Step 2: Start docker images
 
 After creating the docker images you can start the containers. The `docker-compose.yml` file defines the containers required to run the 
@@ -31,10 +33,10 @@ showcase.
 
 * the Apache Zookeeper application provided by Confluent Inc.
 * the Apache Kafka broker provided by Confluent Inc.
-* the self-written `kafka-consumer` which consumes messages from the Kafka topic
+* the custom Java EE application `kafka-consumer` which consumes messages from the Kafka topic
 * the Kafka connector `kafka-connect-mq-source` which connects IBM MQ as a source for Apache Kafka 
 * the IBM MQ broker provided by IBM
-* the self-written `mq-queue-producer` which send messages to the JMS queue
+* the custom Java EE application `mq-queue-producer` which send messages to the JMS queue
 
 To start the containers you have to run `docker-compose`:
 
@@ -44,15 +46,15 @@ $ docker-compose up
 
 #### Step 3: Configure the Kafka connector
 
-When both brokers and the Kafka connector has been started successfully, you have to set up the connection between the MQ broker (source) 
+When both brokers and the Kafka connector has been started successfully, you have to set up the connection between the MQ broker (source)
 and the Kafka broker (sink). 
 
 To setup you have to run the following request with payload below:
 ```shell script
-curl -X POST -H "Content-Type: application/json" -d '{...}' http://localhost:8083/connector
+$ curl -s -X POST -H "Content-Type: application/json" --data @kafka-connect-mq-source-config.json http://localhost:8083/connector
 ```
 
-Payload
+[kafka-connect-mq-source-config.json](kafka-connect-mq-source-config.json)
 ```json
 {
   "name": "IbmMqSourceConnector",
@@ -76,6 +78,22 @@ Payload
   }
 }
 ``` 
+
+#### Step 4: Produce and consume messages
+
+There are two ways to test the bridge between MQ and Kafka. 
+
+1) The custom application `mq-queue-producer` contains a message generator that generates and sends a new message every two seconds. The 
+receipt and successful processing of the message can be traced in the log output of the custom application `kafka-consumer`.
+
+2) In addition to the message generator, the application provides a REST API that can be used to create and send your own messages. 
+
+To send a custom message you have to send the following GET request:
+
+```shell script
+$ curl -X GET http://localhost:9080/mq-queue-producer/api/messages?msg=<custom message>
+```
+
 
 ### Resolving issues
 
