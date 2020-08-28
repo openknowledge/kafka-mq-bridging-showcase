@@ -3,6 +3,11 @@
 Der Showcase zeigt, wie ein MQ Broker mit Hilfe eines Kafka Konnektors 
 [kafka-connect-mq-source](https://github.com/ibm-messaging/kafka-connect-mq-source) als Datenquelle mit einem Kafka Broker verbunden wird. 
 Hierzu wird neben den beiden Brokern und dem Connector ein eigener MQ Queue Produzent und ein eigener Kafka Konsument bereitgestellt.
+Um die Nachrichten, die zwischen dem MQ-Broker und dem Kafka-Broker übertragen werden, nachverfolgen zu können, wurde der Showcase 
+um einen [Jaeger](https://www.jaegertracing.io) Server erweitert. Die Traces werden über 
+[MP OpenTracing](https://microprofile.io/project/eclipse/microprofile-opentracing) bereitgestellt, das sowohl in den MQ Produzenten als auch
+in Kafka Konsumenten integriert wurde.
+
 
 **relevante Features:**
 * Apache Kafka Broker
@@ -97,6 +102,12 @@ $ curl -X GET http://localhost:9080/mq-queue-producer/api/messages?msg=<custom m
 ```
 
 #### Schritt 5: Nachrichten mit OpenTracing und Jaeger verfolgen
+
+Tracing erlaubt es den Datenfluß über mehrere Systeme hinweg zu verfolgen und die Verarbeitungsdauer in einem System zu messen. Eine 
+Anfrage wird mit einem _Trace_ abgebildet. Darüber hinaus wird jeder Methodenaufruf innerhalb des Systems in einem _Span_ aufgezeichnet. Da
+es bei nachrichten-basierten Kommunikation keine direkte Verbindung zwischen den Produzenten und Konsumenten gibt, stellt Tracing eine 
+einfache und effektive Möglichkeit dar, den Weg einer Nachricht zu verfolgen. Die Basis hierfür bilden der OpenTracing Standard und 
+verteilte Tracing-Systeme wie Jaeger.
 
 [OpenTracing](http://opentracing.io/) ist ein neuer, offener Standard zur Ablaufverfolgung für verteilte Anwendungen. Entwickler mit 
 Erfahrung im Aufbau von großen Mikroservice Umgebungen, Wissen um die Notwendigkeit und Bedeutung des verteilten Tracings: Logging auf 
